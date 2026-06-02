@@ -1,10 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-crea-bg: #FDFCF8;
-  --color-crea-text: #2C332B;
-  --color-crea-primary: #4A6741;
-  --color-crea-muted: #8BA888;
-  --color-crea-accent: #E67E22;
-  --color-crea-gold: #FFD700;
+  --color-crea-bg: #F5F2E9;
+  --color-crea-text: #2C241B;
+  --color-crea-primary: #8C3A27;
+  --color-crea-muted: #A39684;
+  --color-crea-accent: #CFA052;
+  --color-crea-gold: #CFA052;
+  
+  --font-sans: "Lora", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-cinzel: "Cinzel", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+body {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-cinzel);
 }

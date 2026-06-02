@@ -1,7 +1,7 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { cn } from '@/lib/utils';
-import { Trophy, Home, ClipboardList, LogOut, Menu, X, Calendar } from 'lucide-react';
+import { Trophy, Home, ClipboardList, LogOut, Menu, X, Calendar, Landmark, Flame } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AppLayout() {
@@ -19,7 +19,7 @@ export default function AppLayout() {
 
   const navItems = [
     { name: 'Ranglista', path: '/leaderboard', icon: Trophy, public: true },
-    { name: 'Program', path: '/program', icon: Calendar, public: true },
+    { name: 'Program', path: '/program', icon: Flame, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
     ...(isOrganizer ? [
       { name: 'Szervezői Pult', path: '/admin/dashboard', icon: ClipboardList, public: false },
@@ -27,18 +27,18 @@ export default function AppLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-crea-bg flex flex-col font-sans text-crea-text">
-      <nav className="bg-[#E8ECE3]/60 backdrop-blur-xl backdrop-saturate-150 border-b border-white/20 sticky top-0 z-50 shadow-[0_4px_30px_rgba(71,102,59,0.05)] supports-[backdrop-filter]:bg-[#E8ECE3]/50">
+    <div className="min-h-screen bg-transparent flex flex-col font-sans text-crea-text relative">
+      <nav className="bg-[#F5F2E9]/80 backdrop-blur-xl backdrop-saturate-150 border-b-2 border-crea-accent/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between h-20">
             <div className="flex items-center">
-              <Link to="/" className="flex-shrink-0 flex items-center space-x-2">
-                <div className="w-10 h-10 bg-crea-primary rounded-xl flex items-center justify-center text-white shadow-md">
-                  <Trophy className="h-5 w-5" />
+              <Link to="/" className="flex-shrink-0 flex items-center space-x-3 group">
+                <div className="w-12 h-12 bg-gradient-to-br from-crea-primary to-[#5A2315] rounded-none border border-crea-accent/50 flex items-center justify-center text-crea-accent shadow-[0_0_15px_rgba(207,160,82,0.3)] group-hover:scale-105 transition-transform duration-300">
+                  <Landmark className="h-6 w-6" />
                 </div>
-                <div className="flex flex-col ml-1">
-                  <span className="text-xl font-bold tracking-tight text-crea-text leading-none">Crea Olimpia</span>
-                  <span className="text-[10px] font-bold text-crea-muted uppercase tracking-widest mt-0.5">2026</span>
+                <div className="flex flex-col">
+                  <span className="text-2xl font-display tracking-widest text-[#2C241B] leading-none uppercase">Crea Olimpia</span>
+                  <span className="text-[10px] font-bold text-crea-primary uppercase tracking-[0.3em] mt-1 pl-0.5">MMXXVI</span>
                 </div>
               </Link>
             </div>
@@ -50,13 +50,13 @@ export default function AppLayout() {
                   key={item.path}
                   to={item.path}
                   className={cn(
-                    "inline-flex items-center px-1 pt-1 text-sm font-semibold border-b-2 transition-colors",
+                    "inline-flex items-center px-1 pt-1 text-sm font-semibold border-b-2 transition-all duration-300 uppercase tracking-widest",
                     location.pathname.startsWith(item.path)
                       ? "border-crea-primary text-crea-primary"
-                      : "border-transparent text-stone-400 hover:border-stone-200 hover:text-stone-600"
+                      : "border-transparent text-crea-muted hover:border-crea-accent/50 hover:text-crea-primary"
                   )}
                 >
-                  <item.icon className="w-4 h-4 mr-2" />
+                  <item.icon className="w-4 h-4 mr-2 mb-0.5" />
                   {item.name}
                 </Link>
               ))}
@@ -64,7 +64,7 @@ export default function AppLayout() {
               {profile ? (
                 <button
                   onClick={handleSignOut}
-                  className="inline-flex items-center text-sm font-medium text-stone-400 hover:text-stone-600"
+                  className="inline-flex items-center text-sm font-semibold uppercase tracking-widest text-crea-muted hover:text-crea-primary transition-colors"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   Kilépés
@@ -72,7 +72,7 @@ export default function AppLayout() {
               ) : (
                 <Link
                   to="/login"
-                  className="inline-flex items-center justify-center px-5 py-2 border border-transparent shadow-sm text-sm font-bold rounded-xl text-white bg-crea-primary hover:bg-crea-primary/90 transition-colors"
+                  className="inline-flex items-center justify-center px-6 py-2 border border-crea-accent shadow-sm text-sm font-bold uppercase tracking-widest text-white bg-crea-primary hover:bg-[#5A2315] transition-colors"
                 >
                   Belépés
                 </Link>
@@ -83,7 +83,7 @@ export default function AppLayout() {
             <div className="-mr-2 flex items-center sm:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+                className="inline-flex items-center justify-center p-2 text-crea-primary hover:text-[#5A2315]"
               >
                 <span className="sr-only">Menü megnyitása</span>
                 {isMenuOpen ? (
@@ -98,22 +98,22 @@ export default function AppLayout() {
 
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="sm:hidden">
+          <div className="sm:hidden border-t-2 border-crea-accent/10 bg-[#F5F2E9]">
             <div className="pt-2 pb-3 space-y-1">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
                   className={cn(
-                    "block pl-3 pr-4 py-2 border-l-4 text-base font-semibold",
+                    "block pl-3 pr-4 py-3 border-l-4 text-sm font-semibold uppercase tracking-widest",
                     location.pathname.startsWith(item.path)
                       ? "bg-crea-primary/5 border-crea-primary text-crea-primary"
-                      : "border-transparent text-stone-500 hover:bg-stone-50 hover:border-stone-200 hover:text-stone-700"
+                      : "border-transparent text-crea-text hover:bg-stone-50/50 hover:border-crea-accent/30"
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <div className="flex items-center">
-                    <item.icon className="w-5 h-5 mr-3 text-gray-500" />
+                    <item.icon className="w-5 h-5 mr-3 text-crea-accent" />
                     {item.name}
                   </div>
                 </Link>
@@ -122,17 +122,17 @@ export default function AppLayout() {
               {profile ? (
                 <button
                   onClick={handleSignOut}
-                  className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-stone-500 hover:bg-stone-50 hover:border-stone-200 hover:text-stone-700"
+                  className="block w-full text-left pl-3 pr-4 py-3 border-l-4 border-transparent text-sm font-semibold uppercase tracking-widest text-crea-text hover:bg-stone-50/50"
                 >
                   <div className="flex items-center">
-                    <LogOut className="w-5 h-5 mr-3 text-stone-400" />
+                    <LogOut className="w-5 h-5 mr-3 text-crea-accent" />
                     Kilépés
                   </div>
                 </button>
               ) : (
                 <Link
                   to="/login"
-                  className="block mx-3 my-2 text-center px-4 py-2 border border-transparent text-base font-bold rounded-xl text-white bg-crea-primary hover:bg-crea-primary/90"
+                  className="block mx-3 my-2 text-center px-4 py-3 border border-crea-accent text-sm font-bold uppercase tracking-widest text-white bg-crea-primary"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Belépés
@@ -143,7 +143,7 @@ export default function AppLayout() {
         )}
       </nav>
 
-      <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 z-10 relative">
         <Outlet />
       </main>
     </div>

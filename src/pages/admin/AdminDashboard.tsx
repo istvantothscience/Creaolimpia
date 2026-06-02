@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { PlusCircle, Trophy, Activity, ClipboardList, Target } from 'lucide-react';
+import { PlusCircle, Crown, Activity, Scroll, Sword } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
 export default function AdminDashboard() {
@@ -8,19 +8,19 @@ export default function AdminDashboard() {
   if (!profile) return null;
 
   const quickActions = [
-    { name: 'Pontozás', path: '/admin/points', icon: Trophy, color: 'bg-crea-primary', description: 'Gyors pontadás csapatoknak' },
-    { name: 'Programok', path: '/admin/program', icon: ClipboardList, color: 'bg-crea-muted', description: 'Napi beosztás kezelése' },
-    { name: 'Szervező társak', path: '/admin/users', icon: Target, color: 'bg-stone-500', description: 'Jogosultságok', adminOnly: true },
+    { name: 'Pontozás', path: '/admin/points', icon: Crown, color: 'bg-crea-primary', description: 'Urald a Drachmákat' },
+    { name: 'Események', path: '/admin/program', icon: Scroll, color: 'bg-crea-muted', description: 'Az Olimpia Krónikája' },
+    { name: 'Tanács', path: '/admin/users', icon: Sword, color: 'bg-[#B17A44]', description: 'Szervezői Jogok', adminOnly: true },
   ];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-black tracking-tight text-crea-text">Szervezői Pult</h1>
-        <p className="mt-2 text-xs font-bold text-stone-400 uppercase tracking-widest">Szia, {profile.name}! Válassz az alábbi lehetőségek közül.</p>
+    <div className="max-w-5xl mx-auto space-y-12 pb-16">
+      <div className="pt-8">
+        <h1 className="text-4xl sm:text-5xl font-display font-black tracking-widest text-crea-text uppercase">Szervezői Agora</h1>
+        <p className="mt-2 text-sm font-bold text-crea-muted uppercase tracking-[0.2em]">Üdvözlet, {profile.name}! Válassz az alábbi teendők közül.</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {quickActions.map((action) => {
           if (action.adminOnly && profile.role !== 'admin') return null;
           
@@ -28,27 +28,27 @@ export default function AdminDashboard() {
             <Link
               key={action.name}
               to={action.path}
-              className="relative group bg-white p-6 rounded-3xl shadow-sm border border-stone-100 hover:shadow-md transition-all hover:border-stone-200"
+              className="relative group bg-[#FAF8F5] p-8 rounded-sm shadow-[0_4px_15px_rgba(44,36,27,0.05)] border border-crea-accent/30 hover:shadow-[0_8px_30px_rgba(207,160,82,0.15)] hover:border-crea-accent/60 transition-all duration-300 overflow-hidden before:absolute before:inset-2 before:border before:border-crea-accent/10 before:pointer-events-none"
             >
-              <div>
-                <span className={`inline-flex rounded-xl p-3 ${action.color} text-white shadow-md`}>
+              <div className="relative z-10">
+                <span className={`inline-flex rounded-sm p-4 ${action.color} text-white shadow-md border border-black/10`}>
                   <action.icon className="h-6 w-6" aria-hidden="true" />
                 </span>
               </div>
-              <div className="mt-6">
-                <h3 className="text-lg font-bold text-crea-text">
+              <div className="mt-8 relative z-10">
+                <h3 className="text-2xl font-display font-medium text-crea-text uppercase tracking-widest">
                   <span className="absolute inset-0" aria-hidden="true" />
                   {action.name}
                 </h3>
-                <p className="mt-1 text-xs font-medium text-stone-400 uppercase tracking-widest">
+                <p className="mt-2 text-xs font-bold text-crea-muted uppercase tracking-[0.2em]">
                   {action.description}
                 </p>
               </div>
               <span
-                className="pointer-events-none absolute right-6 top-6 text-stone-200 group-hover:text-stone-300 transition-colors"
+                className="pointer-events-none absolute right-8 top-8 text-crea-accent/20 group-hover:text-crea-accent/50 transition-colors duration-300"
                 aria-hidden="true"
               >
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
                 </svg>
               </span>

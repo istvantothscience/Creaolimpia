@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Trophy, Medal, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Trophy, Crown, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface RankItem {
@@ -70,22 +70,27 @@ export default function Leaderboard() {
   };
 
   if (loading) {
-    return <div className="flex justify-center p-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-crea-primary"></div></div>;
+    return <div className="flex justify-center p-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-crea-accent"></div></div>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl font-black text-crea-text tracking-tight">Összesített Ranglista</h1>
-        <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mt-2">A csapatok jelenlegi állása</p>
+    <div className="max-w-4xl mx-auto space-y-12 pb-16">
+      <div className="text-center space-y-4 pt-8">
+        <Landmark className="w-12 h-12 mx-auto text-crea-primary opacity-80" />
+        <h1 className="text-4xl sm:text-5xl font-display font-black text-crea-text tracking-widest uppercase">Ranglista</h1>
+        <p className="text-sm font-bold text-crea-muted uppercase tracking-[0.2em] mt-2 flex items-center justify-center">
+          <span className="w-12 h-px bg-crea-accent/30 mr-4"></span>
+          Dicsőségtábla
+          <span className="w-12 h-px bg-crea-accent/30 ml-4"></span>
+        </p>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-stone-100 p-6">
-        <div className="flex justify-between items-end mb-4 px-2">
-           <h2 className="text-sm font-bold text-stone-400 uppercase tracking-wider mb-1">Helyezések</h2>
-           <span className="text-[10px] bg-crea-primary text-white px-2 py-1 rounded-md font-bold">LIVE</span>
+      <div className="bg-[#FAF8F5] relative before:absolute before:inset-2 before:border-2 before:border-crea-accent/20 before:pointer-events-none rounded-sm shadow-[0_8px_30px_rgba(44,36,27,0.1)] border border-crea-accent/30 p-8 sm:p-10">
+        <div className="flex justify-between items-end mb-6 px-2">
+           <h2 className="text-sm font-bold text-crea-text uppercase tracking-[0.2em] mb-1">Poliszok Állása</h2>
+           <span className="text-[10px] bg-crea-primary text-crea-bg border border-crea-bg px-3 py-1 uppercase tracking-widest shadow-sm">Élő</span>
         </div>
-        <ul className="space-y-2">
+        <ul className="space-y-4 relative z-10">
           {scores.map((score, index) => {
             const isTop3 = index < 3;
             
@@ -93,28 +98,35 @@ export default function Leaderboard() {
               <li 
                 key={score.team_id}
                 className={cn(
-                  "flex items-center p-3 sm:p-4 rounded-2xl my-1 transition-all border",
-                  index === 0 ? "bg-crea-primary/5 hover:bg-crea-primary/10 border-crea-primary/20" :
-                  index === 1 ? "bg-stone-50 hover:bg-stone-100 border-stone-200" :
-                  index === 2 ? "bg-crea-accent/5 hover:bg-crea-accent/10 border-crea-accent/20" :
-                  "bg-white hover:bg-stone-50 border-transparent hover:border-stone-100"
+                  "flex items-center p-4 sm:p-5 transition-all border relative overflow-hidden group",
+                  index === 0 ? "bg-[#FDFBF7] border-crea-accent shadow-[0_4px_15px_rgba(207,160,82,0.15)]" :
+                  index === 1 ? "bg-stone-50 border-stone-300" :
+                  index === 2 ? "bg-crea-accent/5 border-[#B17A44]/30" :
+                  "bg-white border-transparent hover:border-crea-accent/20 border-b-crea-muted/10"
                 )}
               >
-                <div className="flex-shrink-0 w-10 text-center flex justify-center items-center">
-                  {index === 0 ? <Medal className="w-6 h-6 text-crea-gold" /> :
-                   index === 1 ? <Medal className="w-6 h-6 text-stone-400" /> :
-                   index === 2 ? <Medal className="w-6 h-6 text-crea-accent" /> :
-                   <span className="text-lg font-bold text-stone-400">{index + 1}.</span>}
+                {/* Decorative background element for #1 */}
+                {index === 0 && (
+                  <div className="absolute -right-4 -bottom-4 opacity-5 text-crea-accent rotate-12 group-hover:scale-110 transition-transform duration-700">
+                    <Crown className="w-32 h-32" />
+                  </div>
+                )}
+
+                <div className="flex-shrink-0 w-12 text-center flex justify-center items-center relative z-10">
+                  {index === 0 ? <Crown className="w-8 h-8 text-crea-accent" /> :
+                   index === 1 ? <Crown className="w-7 h-7 text-stone-400" /> :
+                   index === 2 ? <Crown className="w-7 h-7 text-[#B17A44]" /> :
+                   <span className="text-lg font-display font-black text-crea-muted">{index + 1}.</span>}
                 </div>
                 
-                <div className="ml-3 sm:ml-4 flex-1 flex items-center">
+                <div className="ml-4 sm:ml-6 flex-1 flex items-center relative z-10">
                   <div 
-                    className="w-8 h-8 rounded-full mr-3 shadow-inner border-2 border-white"
+                    className="w-4 h-12 mr-4 shadow-sm border border-black/10"
                     style={{ backgroundColor: score.color || '#e2e8f0' }}
                   />
                   <div>
                     <h2 className={cn(
-                      "text-base sm:text-lg font-bold truncate",
+                      "text-xl sm:text-2xl font-display font-medium tracking-wide uppercase",
                       isTop3 ? "text-crea-text" : "text-stone-600"
                     )}>
                       {score.team_name}
@@ -122,13 +134,13 @@ export default function Leaderboard() {
                   </div>
                 </div>
                 
-                <div className="ml-4 flex items-center justify-end text-right">
-                  <div className="flex items-baseline space-x-1">
-                    <span className="text-xl sm:text-2xl font-black text-crea-text tabular-nums tracking-tight">
+                <div className="ml-4 flex items-center justify-end text-right relative z-10">
+                  <div className="flex flex-col items-end">
+                    <span className="text-2xl sm:text-4xl font-display font-black text-crea-primary tabular-nums">
                       {score.total_points}
                     </span>
-                    <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider hidden sm:inline">
-                      Pont
+                    <span className="text-[10px] font-bold text-crea-muted uppercase tracking-[0.2em] mt-1">
+                      Drachma
                     </span>
                   </div>
                 </div>
@@ -137,8 +149,8 @@ export default function Leaderboard() {
           })}
           
           {scores.length === 0 && (
-            <li className="p-8 text-center text-gray-500">
-              Még nem születtek eredmények.
+            <li className="p-12 text-center text-crea-muted font-display tracking-widest uppercase">
+              Még nincsenek eredmények.
             </li>
           )}
         </ul>

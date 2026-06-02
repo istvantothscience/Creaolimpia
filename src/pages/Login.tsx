@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
-import { Trophy } from 'lucide-react';
+import { Landmark } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
 export default function Login() {
@@ -61,6 +61,8 @@ export default function Login() {
     } catch (err: any) {
       if (err.message === 'Invalid login credentials') {
         setError('Hibás email vagy jelszó.');
+      } else if (err.message === 'Email logins are disabled') {
+        setError('Az email alapú bejelentkezés ki van kapcsolva. Kérlek engedélyezd a Supabase Dashboardon: Authentication -> Providers -> Email -> Enable Email provider.');
       } else if (err.message === 'Failed to fetch') {
         setError('Hálózati hiba (Failed to fetch). Ellenőrizd: 1. Nincs-e bekapcsolva AdBlocker/Brave Shield (kapcsold ki!). 2. Nyisd meg az appot új lapon (jobb felső sarok gomb). 3. Supabase Authentication -> URL Configuration beállítások.');
       } else {
@@ -72,29 +74,29 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-crea-bg flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative z-10">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="w-20 h-20 bg-crea-primary rounded-2xl flex items-center justify-center shadow-lg">
-            <Trophy className="w-10 h-10 text-white" />
+          <div className="w-16 h-16 bg-gradient-to-br from-crea-primary to-[#5A2315] rounded-none border border-crea-accent/50 flex items-center justify-center text-crea-accent shadow-[0_0_20px_rgba(207,160,82,0.4)]">
+            <Landmark className="w-8 h-8" />
           </div>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-black text-crea-text tracking-tight">
-          Crea Olimpia
+        <h2 className="mt-6 text-center text-3xl font-display font-black text-crea-text tracking-widest uppercase">
+          Belépés az Agorára
         </h2>
-        <p className="mt-2 text-center text-sm font-bold text-crea-muted uppercase tracking-widest">
-          2026
+        <p className="mt-2 text-center text-sm font-bold text-crea-primary uppercase tracking-[0.3em]">
+          Crea Olimpia MMXXVI
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-sm sm:rounded-3xl sm:px-10 border border-stone-100">
-          <form className="space-y-6" onSubmit={handleLogin}>
+        <div className="bg-[#FAF8F5] relative before:absolute before:inset-2 before:border before:border-crea-accent/20 before:pointer-events-none py-10 px-6 shadow-[0_8px_30px_rgba(44,36,27,0.1)] sm:rounded-sm sm:px-12 border border-crea-accent/30">
+          <form className="space-y-8 relative z-10" onSubmit={handleLogin}>
             <div>
-              <label htmlFor="email" className="block text-xs font-bold text-stone-400 uppercase tracking-wider">
-                Email cím
+              <label htmlFor="email" className="block text-xs font-bold text-crea-text uppercase tracking-widest">
+                Polgár (Email)
               </label>
-              <div className="mt-1">
+              <div className="mt-2">
                 <input
                   id="email"
                   name="email"
@@ -103,16 +105,16 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-4 py-3 border border-stone-200 rounded-2xl bg-stone-50/50 shadow-sm placeholder-stone-400 focus:outline-none focus:ring-crea-primary focus:border-crea-primary sm:text-sm font-medium transition-colors"
+                  className="appearance-none block w-full px-5 py-4 border border-crea-accent/30 rounded-sm bg-[#FDFBF7] shadow-inner placeholder-crea-muted focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary sm:text-sm font-medium transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-xs font-bold text-stone-400 uppercase tracking-wider">
-                Jelszó
+              <label htmlFor="password" className="block text-xs font-bold text-crea-text uppercase tracking-widest">
+                Titkos Jelszó
               </label>
-              <div className="mt-1">
+              <div className="mt-2">
                 <input
                   id="password"
                   name="password"
@@ -121,34 +123,34 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-4 py-3 border border-stone-200 rounded-2xl bg-stone-50/50 shadow-sm placeholder-stone-400 focus:outline-none focus:ring-crea-primary focus:border-crea-primary sm:text-sm font-medium transition-colors"
+                  className="appearance-none block w-full px-5 py-4 border border-crea-accent/30 rounded-sm bg-[#FDFBF7] shadow-inner placeholder-crea-muted focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary sm:text-sm font-medium transition-colors"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="rounded-md bg-red-50 p-4">
-                <div className="text-sm text-red-700">{error}</div>
+              <div className="rounded-sm bg-red-50/80 border border-red-200 p-4">
+                <div className="text-sm text-red-800 font-medium">{error}</div>
               </div>
             )}
 
-            <div>
+            <div className="pt-4">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-bold text-white bg-crea-primary hover:bg-crea-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-crea-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full flex justify-center py-4 px-4 border border-transparent rounded-sm shadow-[0_4px_15px_rgba(140,58,39,0.2)] text-sm font-bold uppercase tracking-widest text-[#FDFBF7] bg-crea-primary hover:bg-[#5A2315] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                {loading ? 'Bejelentkezés folyamatban...' : 'Belépés'}
+                {loading ? 'Belépés folyamatban...' : 'Belépés'}
               </button>
             </div>
             
-            <div className="mt-4 text-center">
+            <div className="mt-6 text-center border-t border-crea-accent/20 pt-6">
               <button
                 type="button"
                 onClick={() => navigate('/')}
-                className="text-sm font-bold text-stone-500 hover:text-stone-700 transition-colors"
+                className="text-xs font-bold uppercase tracking-widest text-crea-muted hover:text-crea-primary transition-colors flex items-center justify-center w-full"
               >
-                Vissza a főoldalra (Ranglista)
+                Vissza az Olimpia Programjához
               </button>
             </div>
           </form>

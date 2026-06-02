@@ -4,14 +4,22 @@ import { Team } from '@/types/database';
 import { Check, Loader2 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
-export default function PointsForm() {
+export default function PointsForm({ 
+  initialCampDay, 
+  initialNote, 
+  onClose 
+}: { 
+  initialCampDay?: string; 
+  initialNote?: string; 
+  onClose?: () => void; 
+} = {}) {
   const { profile } = useAuth();
   const [teams, setTeams] = useState<Team[]>([]);
   
   const [selectedTeam, setSelectedTeam] = useState<string>('');
-  const [campDay, setCampDay] = useState<string>('1');
+  const [campDay, setCampDay] = useState<string>(initialCampDay || '1');
   const [points, setPoints] = useState<number>(0);
-  const [note, setNote] = useState<string>('');
+  const [note, setNote] = useState<string>(initialNote || '');
   
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -56,10 +64,15 @@ export default function PointsForm() {
       
       setSuccess(true);
       // Állítsuk vissza, de a nap maradjon hogy gyorsan lehessen rögzíteni
-      setNote('');
-      setSelectedTeam('');
+      if (!onClose) {
+        setNote('');
+        setSelectedTeam('');
+      }
       
-      setTimeout(() => setSuccess(false), 3000);
+      setTimeout(() => {
+        setSuccess(false);
+        if (onClose) onClose();
+      }, 1500);
       
     } catch (error) {
       console.warn('Error saving points:', error);
@@ -72,22 +85,28 @@ export default function PointsForm() {
   if (loading) return <div className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-crea-primary" /></div>;
 
   return (
-    <div className="max-w-xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-crea-text tracking-tight">Pontozás</h1>
-        <p className="mt-2 text-xs font-bold text-stone-400 uppercase tracking-widest">Gyors pontadás a csapatoknak</p>
-      </div>
+    <div className={onClose ? "max-w-xl mx-auto" : "max-w-xl mx-auto space-y-12 pb-16"}>
+      {!onClose && (
+        <div className="pt-8 mb-10 text-center">
+          <h1 className="text-4xl sm:text-5xl font-display font-black text-crea-text uppercase tracking-widest">Osztás</h1>
+          <p className="mt-2 text-sm font-bold text-crea-muted uppercase tracking-[0.2em] flex items-center justify-center">
+            <span className="w-12 h-px bg-crea-accent/30 mr-4"></span>
+            Drachmák Adományozása
+            <span className="w-12 h-px bg-crea-accent/30 ml-4"></span>
+          </p>
+        </div>
+      )}
 
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 space-y-6">
+      <form onSubmit={handleSubmit} className={onClose ? "space-y-8 relative z-10" : "bg-[#FAF8F5] relative before:absolute before:inset-2 before:border before:border-crea-accent/20 before:pointer-events-none p-8 sm:p-12 rounded-sm shadow-[0_8px_30px_rgba(44,36,27,0.1)] border border-crea-accent/30 space-y-8 z-10"}>
         
-        <div>
-          <label htmlFor="campDay" className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Tábori Nap</label>
+        <div className="relative z-10">
+          <label htmlFor="campDay" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Az Olimpia Napja</label>
           <select
             id="campDay"
             required
             value={campDay}
             onChange={(e) => setCampDay(e.target.value)}
-            className="block w-full px-4 py-3 text-sm font-bold border border-stone-200 focus:outline-none focus:ring-crea-primary focus:border-crea-primary rounded-2xl bg-stone-50/50 transition-colors"
+            className="block w-full px-5 py-4 text-sm font-bold border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
           >
             {[1, 2, 3, 4].map(day => (
               <option key={day} value={day}>{day}. Nap</option>
@@ -95,16 +114,16 @@ export default function PointsForm() {
           </select>
         </div>
 
-        <div>
-          <label htmlFor="team" className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Csapat</label>
+        <div className="relative z-10">
+          <label htmlFor="team" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Polisz (Csapat)</label>
           <select
             id="team"
             required
             value={selectedTeam}
             onChange={(e) => setSelectedTeam(e.target.value)}
-            className="block w-full px-4 py-3 text-sm font-bold border border-stone-200 focus:outline-none focus:ring-crea-primary focus:border-crea-primary rounded-2xl bg-stone-50/50 transition-colors"
+            className="block w-full px-5 py-4 text-sm font-bold border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
           >
-            <option value="" disabled>Válassz csapatot...</option>
+            <option value="" disabled>Válassz poliszt...</option>
             {teams.map(team => (
               <option key={team.id} value={team.id}>
                 {team.name}
@@ -113,16 +132,16 @@ export default function PointsForm() {
           </select>
         </div>
 
-        <div>
-          <label htmlFor="points" className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Pontszám</label>
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="relative z-10">
+          <label htmlFor="points" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Drachmák Száma</label>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
              <input
               type="number"
               id="points"
               required
               value={points}
               onChange={(e) => setPoints(Number(e.target.value))}
-              className="block w-32 px-4 py-3 text-xl font-black text-crea-primary border border-stone-200 focus:outline-none focus:ring-crea-primary focus:border-crea-primary rounded-2xl bg-stone-50/50 transition-colors"
+              className="block w-32 px-5 py-4 text-2xl font-display font-black text-crea-primary text-center border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner tabular-nums"
             />
             {/* Quick action buttons */}
             <div className="flex flex-wrap gap-2">
@@ -131,7 +150,7 @@ export default function PointsForm() {
                   key={val}
                   type="button"
                   onClick={() => setPoints(p => p + val)}
-                  className="px-4 py-3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold rounded-2xl text-sm transition-colors"
+                  className="px-5 py-4 bg-white hover:bg-[#FDFBF7] border border-crea-accent/20 text-crea-text font-display font-bold rounded-sm text-sm transition-colors uppercase tracking-widest min-w-[3rem]"
                 >
                   {val > 0 ? '+' : ''}{val}
                 </button>
@@ -140,32 +159,32 @@ export default function PointsForm() {
           </div>
         </div>
 
-        <div>
-           <label htmlFor="note" className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Megjegyzés / Feladat (Opcionális)</label>
+        <div className="relative z-10">
+           <label htmlFor="note" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Krónika / Tett (Opcionális)</label>
            <input
             type="text"
             id="note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Pl.: Akadályverseny 1. hely"
-            className="block w-full px-4 py-3 text-sm font-medium border border-stone-200 focus:outline-none focus:ring-crea-primary focus:border-crea-primary rounded-2xl bg-stone-50/50 transition-colors"
+            placeholder="Pl.: Hősies küzdelem a pankrációban..."
+            className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner italic"
           />
         </div>
 
-        <div className="pt-6 border-t border-stone-100">
+        <div className="pt-8 border-t border-crea-accent/10 relative z-10">
           <button
             type="submit"
             disabled={submitting}
-            className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-2xl shadow-sm text-base font-bold text-white bg-crea-primary hover:bg-crea-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-crea-primary disabled:opacity-50 transition-all"
+            className="w-full flex justify-center items-center py-5 px-4 border border-transparent rounded-sm shadow-[0_4px_15px_rgba(140,58,39,0.2)] text-sm font-bold uppercase tracking-widest text-[#FDFBF7] bg-crea-primary hover:bg-[#5A2315] focus:outline-none disabled:opacity-50 transition-colors"
           >
             {submitting ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : success ? (
               <>
-                <Check className="w-5 h-5 mr-2" /> Mentve!
+                <Check className="w-5 h-5 mr-3" /> Eredmény Megírva!
               </>
             ) : (
-              'Mentés'
+              'Drachmák Adományozása'
             )}
           </button>
         </div>
