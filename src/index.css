@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+  --color-crea-bg: #FDFCF8;
+  --color-crea-text: #2C332B;
+  --color-crea-primary: #4A6741;
+  --color-crea-muted: #8BA888;
+  --color-crea-accent: #E67E22;
+  --color-crea-gold: #FFD700;
+}
