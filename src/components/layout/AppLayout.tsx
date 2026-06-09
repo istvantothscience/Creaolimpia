@@ -15,16 +15,11 @@ export default function AppLayout() {
     navigate('/login');
   };
 
-  const isOrganizer = profile?.role === 'teacher' || profile?.role === 'admin';
-
   const navItems = [
     { name: 'Ranglista', path: '/leaderboard', icon: Trophy, public: true },
     { name: 'Egyéni rangsor', path: '/individual-leaderboard', icon: User, public: true },
     { name: 'Program', path: '/program', icon: Flame, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
-    ...(isOrganizer ? [
-      { name: 'Szervezői Pult', path: '/admin/dashboard', icon: ClipboardList, public: false },
-    ] : []),
   ];
 
   return (
