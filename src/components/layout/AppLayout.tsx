@@ -16,6 +16,7 @@ export default function AppLayout() {
   };
 
   const navItems = [
+    { name: 'Láng', path: '/flame', icon: Flame, public: true },
     { name: 'Ranglista', path: '/leaderboard', icon: Trophy, public: true },
     { name: 'Egyéni rangsor', path: '/individual-leaderboard', icon: User, public: true },
     { name: 'Program', path: '/program', icon: Flame, public: true },

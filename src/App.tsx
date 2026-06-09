@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './lib/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
 import Leaderboard from './pages/Leaderboard';
+import OlympiaFlame from './pages/OlympiaFlame';
 import ProgramPage from './pages/ProgramPage';
 import IndividualLeaderboardPage from './pages/IndividualLeaderboardPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -49,6 +50,7 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<Navigate to="/leaderboard" />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/flame" element={<OlympiaFlame />} />
             <Route path="/individual-leaderboard" element={<IndividualLeaderboardPage />} />
             <Route path="/program" element={<ProgramPage />} />
             
