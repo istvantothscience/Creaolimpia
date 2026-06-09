@@ -5,8 +5,11 @@ import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
 import Leaderboard from './pages/Leaderboard';
 import ProgramPage from './pages/ProgramPage';
+import IndividualLeaderboardPage from './pages/IndividualLeaderboardPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import PointsForm from './pages/admin/PointsForm';
+import IndividualScoreForm from './pages/admin/IndividualScoreForm';
+import ParticipantTeamAssignment from './pages/admin/ParticipantTeamAssignment';
 import { supabase } from './lib/supabase';
 
 function AuthGuard({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: string[] }) {
@@ -46,6 +49,7 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<Navigate to="/leaderboard" />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/individual-leaderboard" element={<IndividualLeaderboardPage />} />
             <Route path="/program" element={<ProgramPage />} />
             
             {/* Team Pages */}
@@ -65,6 +69,16 @@ export default function App() {
               <Route path="points" element={
                 <AuthGuard allowedRoles={['teacher', 'admin']}>
                   <PointsForm />
+                </AuthGuard>
+              } />
+              <Route path="individual-scores" element={
+                <AuthGuard allowedRoles={['teacher', 'admin']}>
+                  <IndividualScoreForm />
+                </AuthGuard>
+              } />
+              <Route path="participant-teams" element={
+                <AuthGuard allowedRoles={['admin']}>
+                  <ParticipantTeamAssignment />
                 </AuthGuard>
               } />
             </Route>

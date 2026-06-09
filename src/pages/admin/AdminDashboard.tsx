@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { PlusCircle, Crown, Activity, Scroll, Sword } from 'lucide-react';
+import { PlusCircle, Crown, Activity, Scroll, Sword, Medal, Users } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import TeamIndividualScoreSummary from '@/components/TeamIndividualScoreSummary';
 
 export default function AdminDashboard() {
   const { profile } = useAuth();
@@ -9,8 +10,10 @@ export default function AdminDashboard() {
 
   const quickActions = [
     { name: 'Pontozás', path: '/admin/points', icon: Crown, color: 'bg-crea-primary', description: 'Urald a Drachmákat' },
+    { name: 'Egyéni Pontozás', path: '/admin/individual-scores', icon: Medal, color: 'bg-[#B17A44]', description: 'Egyéni Teljesítmények' },
     { name: 'Események', path: '/admin/program', icon: Scroll, color: 'bg-crea-muted', description: 'Az Olimpia Krónikája' },
-    { name: 'Tanács', path: '/admin/users', icon: Sword, color: 'bg-[#B17A44]', description: 'Szervezői Jogok', adminOnly: true },
+    { name: 'Csapatba Sorolás', path: '/admin/participant-teams', icon: Users, color: 'bg-crea-accent', description: 'Diákok Poliszokba osztása', adminOnly: true },
+    { name: 'Tanács', path: '/admin/users', icon: Sword, color: 'bg-stone-500', description: 'Szervezői Jogok', adminOnly: true },
   ];
 
   return (
@@ -55,6 +58,10 @@ export default function AdminDashboard() {
             </Link>
           );
         })}
+      </div>
+      
+      <div className="pt-12">
+        <TeamIndividualScoreSummary />
       </div>
     </div>
   );

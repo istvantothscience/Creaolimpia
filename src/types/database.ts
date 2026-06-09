@@ -61,3 +61,71 @@ export type ProgramScoreEntryInput = {
   metric_value?: number | null;
   created_by?: string | null;
 };
+
+export type OlympiaParticipant = {
+  id: string;
+  full_name: string;
+  class_name: string | null;
+  participant_order: number | null;
+  team_id: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type IndividualActivity = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  scoring_type: string;
+  default_points: number | null;
+  max_points: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type IndividualScoreEntryInput = {
+  participant_id: string;
+  activity_id: string;
+  points: number;
+  placement?: number | null;
+  metric_label?: string | null;
+  metric_value?: number | null;
+  note?: string | null;
+  score_date?: string;
+  created_by?: string | null;
+};
+
+export type IndividualLeaderboardRow = {
+  participant_id: string;
+  full_name: string;
+  class_name: string | null;
+  team_id: string | null;
+  team_name: string | null;
+  total_points: number;
+  score_entries_count: number;
+  rank: number;
+};
+
+export type TeamIndividualScoreSummaryRow = {
+  team_id: string | null;
+  team_name: string | null;
+  individual_points: number;
+  participants_with_team: number;
+  score_entries_count: number;
+};
+
+export type IndividualScoreByActivityRow = {
+  activity_id: string;
+  activity_name: string;
+  participant_id: string;
+  full_name: string;
+  class_name: string | null;
+  team_id: string | null;
+  team_name: string | null;
+  total_points: number;
+  best_recorded_placement: number | null;
+  entry_count: number;
+};

@@ -1,7 +1,7 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { cn } from '@/lib/utils';
-import { Trophy, Home, ClipboardList, LogOut, Menu, X, Calendar, Landmark, Flame } from 'lucide-react';
+import { Trophy, Home, ClipboardList, LogOut, Menu, X, Calendar, Landmark, Flame, User } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AppLayout() {
@@ -19,6 +19,7 @@ export default function AppLayout() {
 
   const navItems = [
     { name: 'Ranglista', path: '/leaderboard', icon: Trophy, public: true },
+    { name: 'Egyéni rangsor', path: '/individual-leaderboard', icon: User, public: true },
     { name: 'Program', path: '/program', icon: Flame, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
     ...(isOrganizer ? [
