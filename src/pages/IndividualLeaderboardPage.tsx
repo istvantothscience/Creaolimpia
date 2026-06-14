@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
-import { Flame, Medal, User, Crown, Activity } from 'lucide-react';
+import { User, Crown, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
 import { 
   IndividualLeaderboardRow, 
-  IndividualScoreByActivityRow 
+  IndividualScoreByActivityRow,
+  Team
 } from '@/types/database';
 import { individualService } from '@/services/individualService';
 
@@ -12,13 +14,14 @@ export default function IndividualLeaderboardPage() {
   const { profile } = useAuth();
   const [leaderboard, setLeaderboard] = useState<IndividualLeaderboardRow[]>([]);
   const [activityLeaderboard, setActivityLeaderboard] = useState<IndividualScoreByActivityRow[]>([]);
+  const [teams, setTeams] = useState<Record<string, Team>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState<'overall' | 'activities'>('overall');
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('all');
-  const [filterTeam, setFilterTeam] = useState('all'); // 'all', 'assigned', 'unassigned'
+  const [filterTeam, setFilterTeam] = useState('all');
 
   useEffect(() => {
     fetchData();
@@ -28,6 +31,14 @@ export default function IndividualLeaderboardPage() {
     try {
       setLoading(true);
       setError(null);
+      
+      const { data: teamsData } = await supabase.from('teams').select('*');
+      const teamsMap: Record<string, Team> = {};
+      if (teamsData) {
+         teamsData.forEach(t => teamsMap[t.id] = t);
+      }
+      setTeams(teamsMap);
+
       if (activeTab === 'overall') {
         const data = await individualService.getIndividualLeaderboard();
         setLeaderboard(data);
@@ -46,26 +57,47 @@ export default function IndividualLeaderboardPage() {
   const filteredLeaderboard = leaderboard.filter(item => {
     if (search && !item.full_name.toLowerCase().includes(search.toLowerCase())) return false;
     if (filterClass !== 'all' && item.class_name !== filterClass) return false;
-    if (filterTeam === 'assigned' && !item.team_id) return false;
-    if (filterTeam === 'unassigned' && item.team_id) return false;
+    if (filterTeam !== 'all' && item.team_id !== filterTeam) return false;
     return true;
   });
 
   const filteredActivities = activityLeaderboard.filter(item => {
     if (search && !item.full_name.toLowerCase().includes(search.toLowerCase())) return false;
     if (filterClass !== 'all' && item.class_name !== filterClass) return false;
-    if (filterTeam === 'assigned' && !item.team_id) return false;
-    if (filterTeam === 'unassigned' && item.team_id) return false;
+    if (filterTeam !== 'all' && item.team_id !== filterTeam) return false;
     return true;
   });
 
   const uniqueClasses = Array.from(new Set(leaderboard.map(i => i.class_name).filter(Boolean))) as string[];
+  const teamOptions = Object.values(teams);
 
   const renderBadge = (index: number) => {
     if (index === 0) return <Crown className="w-8 h-8 text-crea-accent" />;
     if (index === 1) return <Crown className="w-7 h-7 text-stone-400" />;
     if (index === 2) return <Crown className="w-7 h-7 text-[#B17A44]" />;
     return <span className="text-lg font-display font-black text-crea-muted">{index + 1}.</span>;
+  };
+
+  const renderTeamBadge = (teamId: string | null, teamName: string | null) => {
+    if (!teamId) {
+      return (
+        <span className="text-[10px] bg-stone-100 text-stone-500 px-2 py-0.5 border border-stone-200 uppercase tracking-widest font-bold">
+          Nincs csapathoz rendelve
+        </span>
+      );
+    }
+    const team = teams[teamId];
+    const color = team?.color || '#CFA052';
+    
+    return (
+       <span 
+         className="inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 border uppercase tracking-widest font-bold truncate max-w-[140px]"
+         style={{ borderColor: color, color: color, backgroundColor: `${color}10` }}
+       >
+         <Shield className="w-3 h-3" style={{ color }} />
+         {teamName}
+       </span>
+    );
   };
 
   return (
@@ -128,9 +160,8 @@ export default function IndividualLeaderboardPage() {
           onChange={(e) => setFilterTeam(e.target.value)}
           className="block w-full px-5 py-4 text-sm font-bold border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7]"
         >
-          <option value="all">Mindenki</option>
-          <option value="assigned">Csak csapathoz rendelt</option>
-          <option value="unassigned">Csapat nélküliek</option>
+          <option value="all">Minden csapat</option>
+          {teamOptions.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
         </select>
       </div>
 
@@ -186,15 +217,7 @@ export default function IndividualLeaderboardPage() {
                              {row.class_name}
                            </span>
                         )}
-                        {row.team_name ? (
-                           <span className="text-[10px] bg-crea-accent/10 text-[#8C3A27] px-2 py-0.5 border border-crea-accent/30 uppercase tracking-widest font-bold truncate max-w-[120px]">
-                             {row.team_name}
-                           </span>
-                        ) : (
-                           <span className="text-[10px] bg-red-50 text-red-700 px-2 py-0.5 border border-red-200 uppercase tracking-widest font-bold">
-                             Nincs csapat
-                           </span>
-                        )}
+                        {renderTeamBadge(row.team_id, row.team_name)}
                       </div>
                     </div>
 
@@ -247,15 +270,7 @@ export default function IndividualLeaderboardPage() {
                         {row.class_name || '-'}
                       </td>
                       <td className="py-4 px-2 text-sm hidden md:table-cell">
-                        {row.team_name ? (
-                           <span className="text-[10px] bg-crea-accent/10 text-[#8C3A27] px-2 py-0.5 border border-crea-accent/30 uppercase tracking-widest font-bold">
-                             {row.team_name}
-                           </span>
-                        ) : (
-                           <span className="text-[10px] bg-red-50 text-red-700 px-2 py-0.5 border border-red-200 uppercase tracking-widest font-bold">
-                             Nincs csapat
-                           </span>
-                        )}
+                        {renderTeamBadge(row.team_id, row.team_name)}
                       </td>
                       <td className="py-4 px-2 text-right">
                         <span className="text-xl font-display font-black text-crea-text tabular-nums">

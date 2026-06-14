@@ -3,6 +3,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { Loader2, Check, UserPlus } from 'lucide-react';
 import { OlympiaParticipant, IndividualActivity, IndividualScoreEntryInput } from '@/types/database';
 import { individualService } from '@/services/individualService';
+import { supabase } from '@/lib/supabase';
 
 export default function IndividualScoreForm() {
   const { profile } = useAuth();
@@ -32,11 +33,25 @@ export default function IndividualScoreForm() {
     try {
       setLoading(true);
       setError(null);
-      const [parts, acts] = await Promise.all([
+      const [parts, acts, teamsResponse] = await Promise.all([
         individualService.getParticipants(),
-        individualService.getIndividualActivities()
+        individualService.getIndividualActivities(),
+        supabase.from('teams').select('id, name')
       ]);
-      setParticipants(parts);
+      
+      const teams = teamsResponse.data || [];
+      const enrichedParts = parts.map(p => {
+        const t = teams.find(team => team.id === p.team_id);
+        return { ...p, team_name: t ? t.name : 'Nincs csapat' };
+      });
+      
+      enrichedParts.sort((a, b) => {
+         const tCmp = a.team_name.localeCompare(b.team_name);
+         if (tCmp !== 0) return tCmp;
+         return a.full_name.localeCompare(b.full_name);
+      });
+      
+      setParticipants(enrichedParts as any);
       setActivities(acts);
     } catch (err) {
       console.error(err);
@@ -143,9 +158,9 @@ export default function IndividualScoreForm() {
               className="block w-full px-5 py-4 text-sm font-bold border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
             >
               <option value="" disabled>Válassz résztvevőt...</option>
-              {participants.map(p => (
+              {participants.map((p: any) => (
                 <option key={p.id} value={p.id}>
-                  {p.full_name} {p.class_name ? `(${p.class_name})` : ''} - {p.team_id ? 'Csapatba osztva' : 'Nincs csapat'}
+                  {p.full_name} {p.class_name ? `(${p.class_name})` : ''} - {p.team_name}
                 </option>
               ))}
             </select>

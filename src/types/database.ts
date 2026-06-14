@@ -117,6 +117,25 @@ export type TeamIndividualScoreSummaryRow = {
   score_entries_count: number;
 };
 
+export type TeamWithMembers = {
+  team: Team;
+  members: OlympiaParticipant[];
+  individualPoints: number;
+  teamPoints: number;
+  totalPoints: number;
+  rank?: number;
+};
+
+export type TeamLeaderboardRow = {
+  team_id: string;
+  team_name: string;
+  color: string;
+  team_competition_points: number;
+  team_individual_points: number;
+  total_points: number;
+  rank?: number;
+};
+
 export type IndividualScoreByActivityRow = {
   activity_id: string;
   activity_name: string;

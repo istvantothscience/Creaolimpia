@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Team, WeeklyProgramEvent, ProgramScoreEntryInput } from '@/types/database';
+import { Team, WeeklyProgramEvent, ProgramScoreEntryInput, OlympiaParticipant } from '@/types/database';
 import { Check, Loader2, X } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { programService } from '@/services/programService';
@@ -14,10 +14,16 @@ interface ProgramScoreModalProps {
 export default function ProgramScoreModal({ program, onClose, onSuccess }: ProgramScoreModalProps) {
   const { profile } = useAuth();
   const [teams, setTeams] = useState<Team[]>([]);
+  const [participants, setParticipants] = useState<(OlympiaParticipant & { team_name?: string })[]>([]);
   
   const [selectedTeam, setSelectedTeam] = useState<string>('');
   const [points, setPoints] = useState<number>(program.default_points || 0);
-  const [studentName, setStudentName] = useState<string>('');
+  
+  // For individual events, we want participant ID or name. Since type is string, we store full_name.
+  // Actually, wait! The prompt says: "diáklistát innen töltsd: olympia_participants rendezve csapat, név. A dropdownban jelenjen meg: 'Név (Osztály) - Csapat'". We will save their full_name into student_name.
+  const [selectedParticipantId, setSelectedParticipantId] = useState<string>('');
+  const [studentName, setStudentName] = useState<string>(''); // fallback
+  
   const [metricLabel, setMetricLabel] = useState<string>('');
   const [metricValue, setMetricValue] = useState<string>('');
   const [note, setNote] = useState<string>('');
@@ -30,18 +36,56 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
   const isIndividualEvent = program.event_type === 'individual_sport' || program.event_type === 'individual_challenge';
 
   useEffect(() => {
-    fetchTeams();
+    fetchData();
   }, []);
 
-  const fetchTeams = async () => {
+  const fetchData = async () => {
     if (!supabase) return;
     try {
-      const { data } = await supabase.from('teams').select('id, name, color').order('name');
-      if (data) setTeams(data as Team[]);
+      const [{ data: teamsData }, { data: partData }] = await Promise.all([
+        supabase.from('teams').select('id, name, color').order('name'),
+        supabase.from('olympia_participants').select('*').order('full_name') // we will sort in JS to ensure team is first
+      ]);
+      
+      let teamsList: Team[] = [];
+      if (teamsData) {
+        teamsList = teamsData as Team[];
+        setTeams(teamsList);
+      }
+      
+      if (partData) {
+        const enriched = partData.map(p => {
+           const team = teamsList.find(t => t.id === p.team_id);
+           return { ...p, team_name: team ? team.name : 'Nincs csapat' };
+        });
+        
+        enriched.sort((a, b) => {
+           const teamCmp = (a.team_name || '').localeCompare(b.team_name || '');
+           if (teamCmp !== 0) return teamCmp;
+           return (a.full_name || '').localeCompare(b.full_name || '');
+        });
+        
+        setParticipants(enriched);
+      }
+
     } catch (e) {
       console.warn(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleParticipantChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const pId = e.target.value;
+    setSelectedParticipantId(pId);
+    
+    if (pId) {
+      const p = participants.find(x => x.id === pId);
+      if (p) {
+        if (p.team_id) {
+          setSelectedTeam(p.team_id);
+        }
+      }
     }
   };
 
@@ -53,6 +97,11 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
       return;
     }
     
+    if (isIndividualEvent && !selectedParticipantId) {
+      alert('Kérlek válassz diákot az egyéni versenyszámhoz.');
+      return;
+    }
+    
     if (points === null || points === undefined) {
       alert('Adj meg pontszámot.');
       return;
@@ -61,11 +110,19 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
     setSubmitting(true);
     setSuccess(false);
 
+    let finalStudentName = studentName;
+    if (isIndividualEvent && selectedParticipantId) {
+      const p = participants.find(x => x.id === selectedParticipantId);
+      if (p) {
+        finalStudentName = p.full_name;
+      }
+    }
+
     try {
       const entry: ProgramScoreEntryInput = {
         program_event_id: program.id,
         team_id: selectedTeam,
-        student_name: studentName || null,
+        student_name: finalStudentName || null,
         points: Number(points),
         note: note || null,
         metric_label: metricLabel || null,
@@ -151,16 +208,33 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
 
         <div className="relative z-10">
           <label htmlFor="studentName" className={`block text-xs font-bold uppercase tracking-widest mb-3 ${isIndividualEvent ? 'text-crea-primary' : 'text-crea-text'}`}>
-            Tanuló neve {isIndividualEvent && '(Ajánlott egyéni sportnál)'}
+            Tanuló kiválasztása {isIndividualEvent && '(Kötelező egyéni sportnál)'}
           </label>
-          <input
-            type="text"
-            id="studentName"
-            value={studentName}
-            onChange={(e) => setStudentName(e.target.value)}
-            placeholder="Tanuló neve vagy beceneve"
-            className={`block w-full px-5 py-4 text-sm font-medium border focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner ${isIndividualEvent ? 'border-crea-primary/50' : 'border-crea-accent/30'}`}
-          />
+          
+          {isIndividualEvent ? (
+            <select
+              id="studentSelector"
+              value={selectedParticipantId}
+              onChange={handleParticipantChange}
+              className="block w-full px-5 py-4 text-sm font-bold border border-crea-primary focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
+            >
+              <option value="">Válassz diákot...</option>
+              {participants.map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.full_name} ({p.class_name || '-'}) - {p.team_name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              id="studentName"
+              value={studentName}
+              onChange={(e) => setStudentName(e.target.value)}
+              placeholder="Tanuló neve vagy beceneve"
+              className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

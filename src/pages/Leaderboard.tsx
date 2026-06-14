@@ -2,16 +2,11 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Trophy, Crown, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface RankItem {
-  team_id: string;
-  team_name: string;
-  color: string;
-  total_points: number;
-}
+import { teamService } from '@/services/teamService';
+import { TeamLeaderboardRow } from '@/types/database';
 
 export default function Leaderboard() {
-  const [scores, setScores] = useState<RankItem[]>([]);
+  const [scores, setScores] = useState<TeamLeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,6 +20,9 @@ export default function Leaderboard() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'team_points' }, () => {
         fetchScores();
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'individual_score_entries' }, () => {
+        fetchScores();
+      })
       .subscribe((status, err) => {
         if (err) console.warn('Realtime hiba:', err);
       });
@@ -35,33 +33,9 @@ export default function Leaderboard() {
   }, []);
 
   const fetchScores = async () => {
-    if (!supabase) return;
     try {
-      const [teamsRes, pointsRes] = await Promise.all([
-        supabase.from('teams').select('*'),
-        supabase.from('team_points').select('team_id, points')
-      ]);
-
-      if (teamsRes.error) throw teamsRes.error;
-      if (pointsRes.error) throw pointsRes.error;
-
-      if (teamsRes.data && pointsRes.data) {
-        const aggregated: RankItem[] = teamsRes.data.map(team => {
-          const teamPoints = pointsRes.data
-            .filter(p => p.team_id === team.id)
-            .reduce((sum, p) => sum + p.points, 0);
-            
-          return {
-            team_id: team.id,
-            team_name: team.name,
-            color: team.color,
-            total_points: teamPoints,
-          };
-        });
-
-        aggregated.sort((a, b) => b.total_points - a.total_points);
-        setScores(aggregated);
-      }
+      const leaderboard = await teamService.getTeamLeaderboard();
+      setScores(leaderboard);
     } catch (e) {
       console.warn(e);
     } finally {

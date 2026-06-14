@@ -1,7 +1,7 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { cn } from '@/lib/utils';
-import { Trophy, Home, ClipboardList, LogOut, Menu, X, Calendar, Landmark, Flame, User } from 'lucide-react';
+import { Trophy, Home, ClipboardList, LogOut, Menu, X, Calendar, Landmark, Flame, User, Users, BarChart } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AppLayout() {
@@ -15,12 +15,19 @@ export default function AppLayout() {
     navigate('/login');
   };
 
+  const isOrganizer = profile?.role === 'teacher' || profile?.role === 'admin';
+
   const navItems = [
     { name: 'Láng', path: '/flame', icon: Flame, public: true },
     { name: 'Ranglista', path: '/leaderboard', icon: Trophy, public: true },
     { name: 'Egyéni rangsor', path: '/individual-leaderboard', icon: User, public: true },
-    { name: 'Program', path: '/program', icon: Flame, public: true },
+    { name: 'Csapatok', path: '/teams', icon: Users, public: true },
+    { name: 'Program', path: '/program', icon: Calendar, public: true },
+    { name: 'Statisztika', path: '/statistics', icon: BarChart, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
+    ...(isOrganizer ? [
+      { name: 'Szervezői Pult', path: '/admin/dashboard', icon: ClipboardList, public: false },
+    ] : []),
   ];
 
   return (
