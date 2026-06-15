@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './lib/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Leaderboard from './pages/Leaderboard';
 import OlympiaFlame from './pages/OlympiaFlame';
 import ProgramPage from './pages/ProgramPage';
@@ -50,6 +51,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           
           <Route element={<AppLayout />}>
             <Route path="/" element={<Navigate to="/leaderboard" />} />

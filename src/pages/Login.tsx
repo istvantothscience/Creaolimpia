@@ -144,6 +144,16 @@ export default function Login() {
               </button>
             </div>
             
+            <div className="mt-4 flex items-center justify-center">
+               <button
+                  type="button"
+                  onClick={() => navigate('/forgot-password')}
+                  className="text-xs font-bold uppercase tracking-wider text-crea-primary hover:text-[#5A2315] transition-colors"
+                >
+                 Elfelejtett jelszó?
+               </button>
+            </div>
+            
             <div className="mt-6 text-center border-t border-crea-accent/20 pt-6">
               <button
                 type="button"
