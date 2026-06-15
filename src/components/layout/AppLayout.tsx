@@ -21,7 +21,10 @@ export default function AppLayout() {
     { name: 'Egyéni rangsor', path: '/individual-leaderboard', icon: User, public: true },
     { name: 'Program', path: '/program', icon: Calendar, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
+    ...(profile?.role === 'admin' || profile?.role === 'teacher' ? [{ name: 'Szervezői Agora', path: '/admin/dashboard', icon: ClipboardList, public: false }] : []),
   ];
+
+  const homePath = profile?.role === 'admin' || profile?.role === 'teacher' ? '/admin/dashboard' : '/leaderboard';
 
   return (
     <div className="min-h-screen bg-transparent flex flex-col font-sans text-crea-text relative">
@@ -29,7 +32,7 @@ export default function AppLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
             <div className="flex items-center">
-              <Link to="/" className="flex-shrink-0 flex items-center space-x-3 group">
+              <Link to={homePath} className="flex-shrink-0 flex items-center space-x-3 group">
                 <div className="w-12 h-12 bg-gradient-to-br from-crea-primary to-[#5A2315] rounded-none border border-crea-accent/50 flex items-center justify-center text-crea-accent shadow-[0_0_15px_rgba(207,160,82,0.3)] group-hover:scale-105 transition-transform duration-300">
                   <Landmark className="h-6 w-6" />
                 </div>
