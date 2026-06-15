@@ -63,8 +63,8 @@ export default function TeamDetailsPage() {
           style={{ color: teamData.team.color || '#CFA052' }}
         ></div>
 
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-crea-accent/20">
-          <div className="flex items-center gap-4 text-center sm:text-left">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-crea-accent/20 text-center sm:text-left">
+          <div className="flex items-center justify-center sm:justify-start gap-4 flex-col sm:flex-row">
             <Shield className="w-16 h-16 sm:w-20 sm:h-20" style={{ color: teamData.team.color || '#CFA052' }} />
             <div>
               <h1 className="text-4xl sm:text-5xl font-display font-black text-crea-text tracking-widest uppercase">

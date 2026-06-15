@@ -19,7 +19,6 @@ export default function AppLayout() {
     { name: 'Láng', path: '/flame', icon: Flame, public: true },
     { name: 'Ranglista', path: '/leaderboard', icon: Trophy, public: true },
     { name: 'Egyéni rangsor', path: '/individual-leaderboard', icon: User, public: true },
-    { name: 'Csapatok', path: '/teams', icon: Users, public: true },
     { name: 'Program', path: '/program', icon: Calendar, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
   ];

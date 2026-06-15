@@ -72,7 +72,7 @@ export default function Leaderboard() {
               <li 
                 key={score.team_id}
                 className={cn(
-                  "flex items-center p-4 sm:p-5 transition-all border relative overflow-hidden group",
+                  "flex flex-col sm:flex-row sm:items-center p-4 sm:p-5 transition-all border relative overflow-hidden group",
                   index === 0 ? "bg-[#FDFBF7] border-crea-accent shadow-[0_4px_15px_rgba(207,160,82,0.15)]" :
                   index === 1 ? "bg-stone-50 border-stone-300" :
                   index === 2 ? "bg-crea-accent/5 border-[#B17A44]/30" :
@@ -81,35 +81,37 @@ export default function Leaderboard() {
               >
                 {/* Decorative background element for #1 */}
                 {index === 0 && (
-                  <div className="absolute -right-4 -bottom-4 opacity-5 text-crea-accent rotate-12 group-hover:scale-110 transition-transform duration-700">
+                  <div className="absolute -right-4 -bottom-4 opacity-5 text-crea-accent rotate-12 group-hover:scale-110 transition-transform duration-700 pointer-events-none">
                     <Crown className="w-32 h-32" />
                   </div>
                 )}
 
-                <div className="flex-shrink-0 w-12 text-center flex justify-center items-center relative z-10">
-                  {index === 0 ? <Crown className="w-8 h-8 text-crea-accent" /> :
-                   index === 1 ? <Crown className="w-7 h-7 text-stone-400" /> :
-                   index === 2 ? <Crown className="w-7 h-7 text-[#B17A44]" /> :
-                   <span className="text-lg font-display font-black text-crea-muted">{index + 1}.</span>}
-                </div>
-                
-                <div className="ml-4 sm:ml-6 flex-1 flex items-center relative z-10">
-                  <div 
-                    className="w-4 h-12 mr-4 shadow-sm border border-black/10"
-                    style={{ backgroundColor: score.color || '#e2e8f0' }}
-                  />
-                  <div>
-                    <h2 className={cn(
-                      "text-xl sm:text-2xl font-display font-medium tracking-wide uppercase",
-                      isTop3 ? "text-crea-text" : "text-stone-600"
-                    )}>
-                      {score.team_name}
-                    </h2>
+                <div className="flex items-center w-full sm:w-auto mb-4 sm:mb-0 relative z-10">
+                  <div className="flex-shrink-0 w-12 text-center flex justify-center items-center">
+                    {index === 0 ? <Crown className="w-8 h-8 text-crea-accent" /> :
+                     index === 1 ? <Crown className="w-7 h-7 text-stone-400" /> :
+                     index === 2 ? <Crown className="w-7 h-7 text-[#B17A44]" /> :
+                     <span className="text-lg font-display font-black text-crea-muted">{index + 1}.</span>}
+                  </div>
+                  
+                  <div className="ml-4 flex-1 flex items-center">
+                    <div 
+                      className="w-4 h-12 mr-4 shadow-sm border border-black/10 flex-shrink-0"
+                      style={{ backgroundColor: score.color || '#e2e8f0' }}
+                    />
+                    <div>
+                      <h2 className={cn(
+                        "text-xl sm:text-2xl font-display font-medium tracking-wide uppercase break-words",
+                        isTop3 ? "text-crea-text" : "text-stone-600"
+                      )}>
+                        {score.team_name}
+                      </h2>
+                    </div>
                   </div>
                 </div>
                 
-                <div className="ml-4 flex items-center justify-end text-right relative z-10">
-                  <div className="flex flex-col items-end">
+                <div className="sm:ml-auto flex items-center justify-start sm:justify-end text-left sm:text-right relative z-10 pl-16 sm:pl-0">
+                  <div className="flex flex-col items-start sm:items-end">
                     <span className="text-2xl sm:text-4xl font-display font-black text-crea-primary tabular-nums">
                       {score.total_points}
                     </span>
