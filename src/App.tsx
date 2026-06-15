@@ -10,6 +10,7 @@ import IndividualLeaderboardPage from './pages/IndividualLeaderboardPage';
 import TeamsPage from './pages/TeamsPage';
 import TeamDetailsPage from './pages/TeamDetailsPage';
 import StatisticsPage from './pages/StatisticsPage';
+import ProfilePage from './pages/ProfilePage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import PointsForm from './pages/admin/PointsForm';
 import IndividualScoreForm from './pages/admin/IndividualScoreForm';
@@ -59,6 +60,11 @@ export default function App() {
             <Route path="/teams/:teamId" element={<TeamDetailsPage />} />
             <Route path="/statistics" element={<StatisticsPage />} />
             <Route path="/program" element={<ProgramPage />} />
+            <Route path="/profile" element={
+              <AuthGuard>
+                <ProfilePage />
+              </AuthGuard>
+            } />
             
             {/* Team Pages */}
             <Route path="/team" element={

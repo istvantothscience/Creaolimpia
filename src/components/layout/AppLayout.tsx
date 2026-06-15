@@ -23,7 +23,6 @@ export default function AppLayout() {
     { name: 'Egyéni rangsor', path: '/individual-leaderboard', icon: User, public: true },
     { name: 'Csapatok', path: '/teams', icon: Users, public: true },
     { name: 'Program', path: '/program', icon: Calendar, public: true },
-    { name: 'Statisztika', path: '/statistics', icon: BarChart, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
     ...(isOrganizer ? [
       { name: 'Szervezői Pult', path: '/admin/dashboard', icon: ClipboardList, public: false },
@@ -66,13 +65,21 @@ export default function AppLayout() {
               ))}
               
               {profile ? (
-                <button
-                  onClick={handleSignOut}
-                  className="inline-flex items-center text-sm font-semibold uppercase tracking-widest text-crea-muted hover:text-crea-primary transition-colors"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Kilépés
-                </button>
+                <div className="flex items-center space-x-6">
+                  <Link
+                    to="/profile"
+                    className="inline-flex items-center text-sm font-semibold uppercase tracking-widest text-crea-muted hover:text-crea-primary transition-colors"
+                  >
+                    Profil
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="inline-flex items-center text-sm font-semibold uppercase tracking-widest text-crea-muted hover:text-crea-primary transition-colors"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Kilépés
+                  </button>
+                </div>
               ) : (
                 <Link
                   to="/login"
@@ -124,15 +131,27 @@ export default function AppLayout() {
               ))}
               
               {profile ? (
-                <button
-                  onClick={handleSignOut}
-                  className="block w-full text-left pl-3 pr-4 py-3 border-l-4 border-transparent text-sm font-semibold uppercase tracking-widest text-crea-text hover:bg-stone-50/50"
-                >
-                  <div className="flex items-center">
-                    <LogOut className="w-5 h-5 mr-3 text-crea-accent" />
-                    Kilépés
-                  </div>
-                </button>
+                <>
+                  <Link
+                    to="/profile"
+                    className="block w-full text-left pl-3 pr-4 py-3 border-l-4 border-transparent text-sm font-semibold uppercase tracking-widest text-crea-text hover:bg-stone-50/50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <div className="flex items-center">
+                      <User className="w-5 h-5 mr-3 text-crea-accent" />
+                      Profil
+                    </div>
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="block w-full text-left pl-3 pr-4 py-3 border-l-4 border-transparent text-sm font-semibold uppercase tracking-widest text-crea-text hover:bg-stone-50/50"
+                  >
+                    <div className="flex items-center">
+                      <LogOut className="w-5 h-5 mr-3 text-crea-accent" />
+                      Kilépés
+                    </div>
+                  </button>
+                </>
               ) : (
                 <Link
                   to="/login"
