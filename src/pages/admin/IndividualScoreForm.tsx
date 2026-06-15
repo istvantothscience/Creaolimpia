@@ -210,56 +210,6 @@ export default function IndividualScoreForm() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-            <div>
-              <label htmlFor="placement" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Helyezés (Opcionális)</label>
-              <input
-                type="number"
-                id="placement"
-                value={placement}
-                onChange={(e) => setPlacement(e.target.value)}
-                placeholder="pl. 1"
-                className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7]"
-              />
-            </div>
-            <div>
-               <label htmlFor="scoreDate" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Dátum</label>
-               <input
-                  type="date"
-                  id="scoreDate"
-                  value={scoreDate}
-                  onChange={(e) => setScoreDate(e.target.value)}
-                  className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7]"
-                />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-             <div>
-              <label htmlFor="metricLabel" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Mérőszám típus</label>
-              <input
-                type="text"
-                id="metricLabel"
-                value={metricLabel}
-                onChange={(e) => setMetricLabel(e.target.value)}
-                placeholder="pl. méter, kör"
-                className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7]"
-              />
-            </div>
-            <div>
-              <label htmlFor="metricValue" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Mérőszám érték</label>
-              <input
-                type="number"
-                step="0.01"
-                id="metricValue"
-                value={metricValue}
-                onChange={(e) => setMetricValue(e.target.value)}
-                placeholder="pl. 4.5"
-                className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7]"
-              />
-            </div>
-          </div>
-
           <div className="relative z-10">
              <label htmlFor="note" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Megjegyzés (Opcionális)</label>
              <input

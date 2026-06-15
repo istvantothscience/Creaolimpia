@@ -160,23 +160,25 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
       <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="relative z-10">
-            <label htmlFor="team" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Polisz (Csapat) *</label>
-            <select
-              id="team"
-              required
-              value={selectedTeam}
-              onChange={(e) => setSelectedTeam(e.target.value)}
-              className="block w-full px-5 py-4 text-sm font-bold border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
-            >
-              <option value="" disabled>Válassz poliszt...</option>
-              {teams.map(team => (
-                <option key={team.id} value={team.id}>
-                  {team.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {!isIndividualEvent && (
+            <div className="relative z-10">
+              <label htmlFor="team" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Polisz (Csapat) *</label>
+              <select
+                id="team"
+                required
+                value={selectedTeam}
+                onChange={(e) => setSelectedTeam(e.target.value)}
+                className="block w-full px-5 py-4 text-sm font-bold border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
+              >
+                <option value="" disabled>Válassz poliszt...</option>
+                {teams.map(team => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="relative z-10">
             <label htmlFor="points" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Drachmák Száma *</label>
@@ -237,43 +239,47 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="relative z-10">
-            <label htmlFor="metricLabel" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Mérőszám típusa</label>
-            <input
-              type="text"
-              id="metricLabel"
-              value={metricLabel}
-              onChange={(e) => setMetricLabel(e.target.value)}
-              placeholder="pl. gól, kör, méter, perc, helyezés"
-              className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
-            />
-          </div>
+        {!isIndividualEvent && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="relative z-10">
+                <label htmlFor="metricLabel" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Mérőszám típusa</label>
+                <input
+                  type="text"
+                  id="metricLabel"
+                  value={metricLabel}
+                  onChange={(e) => setMetricLabel(e.target.value)}
+                  placeholder="pl. gól, kör, méter, perc, helyezés"
+                  className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
+                />
+              </div>
 
-          <div className="relative z-10">
-            <label htmlFor="metricValue" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Mérőszám értéke</label>
-            <input
-              type="number"
-              id="metricValue"
-              value={metricValue}
-              onChange={(e) => setMetricValue(e.target.value)}
-              placeholder="pl. 3"
-              className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner tabular-nums"
-            />
-          </div>
-        </div>
+              <div className="relative z-10">
+                <label htmlFor="metricValue" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Mérőszám értéke</label>
+                <input
+                  type="number"
+                  id="metricValue"
+                  value={metricValue}
+                  onChange={(e) => setMetricValue(e.target.value)}
+                  placeholder="pl. 3"
+                  className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner tabular-nums"
+                />
+              </div>
+            </div>
 
-        <div className="relative z-10">
-            <label htmlFor="note" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Megjegyzés (Opcionális)</label>
-            <input
-            type="text"
-            id="note"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Rövid megjegyzés"
-            className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner italic"
-          />
-        </div>
+            <div className="relative z-10">
+                <label htmlFor="note" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Megjegyzés (Opcionális)</label>
+                <input
+                type="text"
+                id="note"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Rövid megjegyzés"
+                className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner italic"
+              />
+            </div>
+          </>
+        )}
 
         <div className="pt-8 border-t border-crea-accent/10 relative z-10 flex flex-col sm:flex-row gap-4">
           <button
