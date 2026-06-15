@@ -92,13 +92,18 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile) return;
-    if (!selectedTeam) {
+    if (isIndividualEvent && !selectedParticipantId) {
+      alert('Kérlek válassz diákot az egyéni versenyszámhoz.');
+      return;
+    }
+    
+    if (!isIndividualEvent && !selectedTeam) {
       alert('Válassz csapatot.');
       return;
     }
     
-    if (isIndividualEvent && !selectedParticipantId) {
-      alert('Kérlek válassz diákot az egyéni versenyszámhoz.');
+    if (isIndividualEvent && !selectedTeam) {
+      alert('A választott diáknak nincs csapata beállítva rendszerben.');
       return;
     }
     
