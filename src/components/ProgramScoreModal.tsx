@@ -115,8 +115,8 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
     setSubmitting(true);
     setSuccess(false);
 
-    let finalStudentName = studentName;
-    if (isIndividualEvent && selectedParticipantId) {
+    let finalStudentName = null;
+    if (selectedParticipantId) {
       const p = participants.find(x => x.id === selectedParticipantId);
       if (p) {
         finalStudentName = p.full_name;
@@ -213,78 +213,24 @@ export default function ProgramScoreModal({ program, onClose, onSuccess }: Progr
             ))}
         </div>
 
-        <div className="relative z-10">
-          <label htmlFor="studentName" className={`block text-xs font-bold uppercase tracking-widest mb-3 ${isIndividualEvent ? 'text-crea-primary' : 'text-crea-text'}`}>
-            Tanuló kiválasztása {isIndividualEvent && '(Kötelező egyéni sportnál)'}
+        <div className="relative z-10 w-full mb-6">
+          <label htmlFor="studentSelector" className={`block text-xs font-bold uppercase tracking-widest mb-3 ${isIndividualEvent ? 'text-crea-primary' : 'text-crea-text'}`}>
+            Tanuló kiválasztása {isIndividualEvent ? '(Kötelező)' : '(Opcionális)'}
           </label>
-          
-          {isIndividualEvent ? (
-            <select
-              id="studentSelector"
-              value={selectedParticipantId}
-              onChange={handleParticipantChange}
-              className="block w-full px-5 py-4 text-sm font-bold border border-crea-primary focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
-            >
-              <option value="">Válassz diákot...</option>
-              {participants.map(p => (
-                <option key={p.id} value={p.id}>
-                  {p.full_name} ({p.class_name || '-'}) - {p.team_name}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <input
-              type="text"
-              id="studentName"
-              value={studentName}
-              onChange={(e) => setStudentName(e.target.value)}
-              placeholder="Tanuló neve vagy beceneve"
-              className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
-            />
-          )}
+          <select
+            id="studentSelector"
+            value={selectedParticipantId}
+            onChange={handleParticipantChange}
+            className="block w-full px-5 py-4 text-sm font-bold border border-crea-primary focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
+          >
+            <option value="">{isIndividualEvent ? 'Válassz diákot...' : 'Nincs diák kiválasztva (Csak csapatpont)'}</option>
+            {participants.map(p => (
+              <option key={p.id} value={p.id}>
+                {p.full_name} ({p.class_name || '-'}) - {p.team_name}
+              </option>
+            ))}
+          </select>
         </div>
-
-        {!isIndividualEvent && (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="relative z-10">
-                <label htmlFor="metricLabel" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Mérőszám típusa</label>
-                <input
-                  type="text"
-                  id="metricLabel"
-                  value={metricLabel}
-                  onChange={(e) => setMetricLabel(e.target.value)}
-                  placeholder="pl. gól, kör, méter, perc, helyezés"
-                  className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner"
-                />
-              </div>
-
-              <div className="relative z-10">
-                <label htmlFor="metricValue" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Mérőszám értéke</label>
-                <input
-                  type="number"
-                  id="metricValue"
-                  value={metricValue}
-                  onChange={(e) => setMetricValue(e.target.value)}
-                  placeholder="pl. 3"
-                  className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner tabular-nums"
-                />
-              </div>
-            </div>
-
-            <div className="relative z-10">
-                <label htmlFor="note" className="block text-xs font-bold text-crea-text uppercase tracking-widest mb-3">Megjegyzés (Opcionális)</label>
-                <input
-                type="text"
-                id="note"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                placeholder="Rövid megjegyzés"
-                className="block w-full px-5 py-4 text-sm font-medium border border-crea-accent/30 focus:outline-none focus:ring-1 focus:ring-crea-primary focus:border-crea-primary rounded-sm bg-[#FDFBF7] transition-colors shadow-inner italic"
-              />
-            </div>
-          </>
-        )}
 
         <div className="pt-8 border-t border-crea-accent/10 relative z-10 flex flex-col sm:flex-row gap-4">
           <button
