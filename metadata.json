@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Creaolimpia2026",
+  "description": "Olimpiai pontozó és ranglista rendszer",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -15,8 +15,6 @@ export default function AppLayout() {
     navigate('/login');
   };
 
-  const isOrganizer = profile?.role === 'teacher' || profile?.role === 'admin';
-
   const navItems = [
     { name: 'Láng', path: '/flame', icon: Flame, public: true },
     { name: 'Ranglista', path: '/leaderboard', icon: Trophy, public: true },
@@ -24,9 +22,6 @@ export default function AppLayout() {
     { name: 'Csapatok', path: '/teams', icon: Users, public: true },
     { name: 'Program', path: '/program', icon: Calendar, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
-    ...(isOrganizer ? [
-      { name: 'Szervezői Pult', path: '/admin/dashboard', icon: ClipboardList, public: false },
-    ] : []),
   ];
 
   return (
