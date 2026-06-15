@@ -21,7 +21,6 @@ export default function AppLayout() {
     { name: 'Egyéni rangsor', path: '/individual-leaderboard', icon: User, public: true },
     { name: 'Program', path: '/program', icon: Calendar, public: true },
     ...(profile?.role === 'student' ? [{ name: 'Csapatom', path: '/team', icon: Home, public: false }] : []),
-    ...(profile?.role === 'admin' || profile?.role === 'teacher' ? [{ name: 'Szervezői Agora', path: '/admin/dashboard', icon: ClipboardList, public: false }] : []),
   ];
 
   const homePath = profile?.role === 'admin' || profile?.role === 'teacher' ? '/admin/dashboard' : '/leaderboard';
@@ -63,6 +62,15 @@ export default function AppLayout() {
               
               {profile ? (
                 <div className="flex items-center space-x-6">
+                  {(profile.role === 'admin' || profile.role === 'teacher') && (
+                    <Link
+                      to="/admin/dashboard"
+                      className="inline-flex items-center text-sm font-bold uppercase tracking-[0.2em] text-crea-primary hover:text-[#5A2315] transition-colors"
+                    >
+                      <ClipboardList className="w-4 h-4 mr-2" />
+                      Szervezői Agora
+                    </Link>
+                  )}
                   <Link
                     to="/profile"
                     className="inline-flex items-center text-sm font-semibold uppercase tracking-widest text-crea-muted hover:text-crea-primary transition-colors"
@@ -129,6 +137,18 @@ export default function AppLayout() {
               
               {profile ? (
                 <>
+                  {(profile.role === 'admin' || profile.role === 'teacher') && (
+                    <Link
+                      to="/admin/dashboard"
+                      className="block w-full text-left pl-3 pr-4 py-3 border-l-4 border-transparent text-sm font-bold uppercase tracking-widest text-crea-primary hover:bg-stone-50/50"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <div className="flex items-center">
+                        <ClipboardList className="w-5 h-5 mr-3 text-crea-primary" />
+                        Szervezői Agora
+                      </div>
+                    </Link>
+                  )}
                   <Link
                     to="/profile"
                     className="block w-full text-left pl-3 pr-4 py-3 border-l-4 border-transparent text-sm font-semibold uppercase tracking-widest text-crea-text hover:bg-stone-50/50"

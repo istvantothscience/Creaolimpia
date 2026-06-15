@@ -12,7 +12,6 @@ export default function AdminDashboard() {
     { name: 'Pontozás', path: '/admin/points', icon: Crown, color: 'bg-crea-primary', description: 'Urald a Drachmákat' },
     { name: 'Egyéni Pontozás', path: '/admin/individual-scores', icon: Medal, color: 'bg-[#B17A44]', description: 'Egyéni Teljesítmények' },
     { name: 'Események', path: '/admin/program', icon: Scroll, color: 'bg-crea-muted', description: 'Az Olimpia Krónikája' },
-    { name: 'Csapatba Sorolás', path: '/admin/participant-teams', icon: Users, color: 'bg-crea-accent', description: 'Diákok Poliszokba osztása', adminOnly: true },
   ];
 
   return (
